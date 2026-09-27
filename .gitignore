@@ -9,3 +9,5 @@ wheels/
 
 # Virtual environments
 .venv
+config.bat
+node_modules
