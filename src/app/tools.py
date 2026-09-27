@@ -1,4 +1,5 @@
 """ Here is my mock data definition """
+from app import config
 from app.schemas import Product
 
 MOCK_DATA = [
@@ -133,3 +134,5 @@ def _find_product(product_id: int) -> Product | None:
             return product
     return None
 
+if __name__ == "__main__":
+    server.run(transport="streamable-http", port=config.MCP_PORT, host=config.MCP_HOST)
