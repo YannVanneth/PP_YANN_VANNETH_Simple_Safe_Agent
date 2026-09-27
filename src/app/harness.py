@@ -2,7 +2,7 @@
 
 from pydantic import ValidationError
 
-from app.schemas import GetProductsInput, ProductIdInput, SearchProductsInput, UserRole
+from app.schemas import GetProductsInput, InsertProductInput, ProductIdInput, SearchProductsInput, UserRole
 
 class PermissionDenied(Exception):
     """Raised when a role requests a tool it is not allowed to use."""
@@ -17,7 +17,7 @@ TOOL_INPUT_SCHEMAS = {
     "check_stock": ProductIdInput,
     "delete_product": ProductIdInput,
     "get_products": GetProductsInput,
-    "add_product": ProductIdInput,
+    "add_product": InsertProductInput,
     "buy_product": ProductIdInput,
 }
 

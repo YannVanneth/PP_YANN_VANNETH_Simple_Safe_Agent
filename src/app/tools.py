@@ -1,6 +1,6 @@
 """ Here is my mock data definition """
 from app import config
-from app.schemas import Product
+from app.schemas import NewProduct, Product
 
 MOCK_DATA = [
     Product(product_id=1, name="Laptop", quantity=10, price=999.99),
@@ -33,14 +33,16 @@ async def get_products() -> dict[str, object]:
 
 
 @server.tool()
-async def add_product(product: Product) -> dict[str, object]:
-    """ Add a new product to the catalog. The app checks admin permission"""
+async def add_product(product: NewProduct) -> dict[str, object]:
+    """Add a product using name, price, and quantity (or stock). The app checks admin permission."""
 
-    MOCK_DATA.append(product)
+    product_id = max((item.product_id for item in MOCK_DATA), default=0) + 1
+    saved_product = Product(product_id=product_id, **product.model_dump())
+    MOCK_DATA.append(saved_product)
 
     return {
-        "product_id": product.product_id,
-        "product_name": product.name
+        "product_id": saved_product.product_id,
+        "product_name": saved_product.name
     }
 
 

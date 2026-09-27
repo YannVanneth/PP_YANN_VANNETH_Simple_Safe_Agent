@@ -1,5 +1,5 @@
 """ Here is my schema definition """
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import AliasChoices, BaseModel, Field, ConfigDict
 
 """ Product Schema """
 class Product(BaseModel):
@@ -7,6 +7,22 @@ class Product(BaseModel):
     name: str = Field(min_length=1, description="Product name")
     quantity: int = Field(ge=0, description="Units currently in stock")
     price: float = Field(gt=0, description="Price in USD")
+    category: str | None = None
+    description: str | None = None
+
+
+class NewProduct(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(min_length=1, description="Product name")
+    price: float = Field(gt=0, description="Price in USD")
+    quantity: int = Field(
+        ge=0,
+        validation_alias=AliasChoices("quantity", "stock"),
+        description="Initial quantity (also accepts stock)",
+    )
+    category: str | None = None
+    description: str | None = None
 
 """ Defining Input Schema """
 class GetProductsInput(BaseModel):
@@ -14,6 +30,8 @@ class GetProductsInput(BaseModel):
 
 class InsertProductInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
+
+    product: NewProduct
 
 class BuyProductInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
