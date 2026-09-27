@@ -38,9 +38,9 @@ def main():
             if first_request:
                 request = first_request
                 first_request = ""
-                print(f"\nYou: {request}")
+                print(f"\nYou : {request}")
             else:
-                request = input("\nYou: ").strip()
+                request = input("\nYou : ").strip()
 
             if request.lower() in {"exit", "quit", "bye"}:
                 break
@@ -49,8 +49,7 @@ def main():
 
             result = asyncio.run(run_agent(request, role, history))
             history = result.messages
-            print(f"Agent: {result.answer}")
-            print(f"({result.model_turns} model turn(s), {result.tool_calls} tool call(s))")
+            print(f"AGENT: {result.answer}")
     except (EOFError, KeyboardInterrupt):
         print()
 

@@ -26,7 +26,6 @@ class AgentResult:
 from app import config
 from app.harness import TOOL_INPUT_SCHEMAS, PermissionDenied, validate_tool_call
 
-
 from mcp import Client
 from mcp.types import CallToolResult
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
@@ -79,12 +78,15 @@ def build_graph(model, client: Client):
                     observation = tool_result_text(result)
 
                 except PermissionDenied as exc:
+                    stop_reason = f"Your Role {state["role"]}, Don't have permission to use {call["name"]} tool."
                     observation = json.dumps({"error": str(exc), "code": "PERMISSION_DENIED"})
 
                 except ValueError as exc:
+                    stop_reason = f"Invalid arguments for {call['name']} tool."
                     observation = json.dumps({"error": str(exc), "code": "INVALID_ARGUMENT"})
 
                 except Exception:
+                    stop_reason = f"Tool '{name}' could not be completed."
                     observation = json.dumps({"error": f"Tool '{name}' could not be completed."})
 
             print(f"Observation: {observation}")
