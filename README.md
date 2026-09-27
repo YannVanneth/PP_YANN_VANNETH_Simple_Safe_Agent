@@ -26,7 +26,11 @@ Start Ollama and make sure the model named in `src/app/config.py` is available. 
 uv run python -m app.tools
 ```
 
-The server listens at `http://127.0.0.1:8000/mcp` by default. In another terminal, start the chat:
+The server listens at `http://127.0.0.1:8000/mcp` by default.
+
+![MCP server running locally](src/docs/run_mcp_server.png)
+
+In another terminal, start the chat:
 
 ```bash
 uv run python -m main
@@ -40,6 +44,8 @@ uv run python -m main --role admin
 ```
 
 The chat stays open after answering. Type `exit`, `quit`, or `bye` to leave it.
+
+![Customer agent listing the products in the catalog](src/docs/Agent_running.png)
 
 ## Available Tools
 
@@ -83,12 +89,20 @@ The `--role` flag selects the application role; it defaults to `customer`. [`src
 | `add_product` | No | Yes |
 | `delete_product` | No | Yes |
 
+For example, a customer request to delete products is denied:
+
+![Customer role denied access to the delete_product tool](src/docs/Agent_customer_role_test_case_with_admin_function.png)
+
 ## Safety
 
 - The app only calls tools on its allowlist. It checks the selected role before calling the MCP server.
 - Pydantic validates tool arguments, including required fields, positive product IDs and prices, and nonnegative quantities. Invalid calls return an error observation to the model.
 - Tool failures and permission denials are reported as errors. The agent prompt instructs the model to claim success only when a tool result confirms it.
 - [`src/app/config.py`](src/app/config.py) sets the loop limits to 6 model turns and 8 tool calls. The app stops with a message when a limit is reached.
+
+This admin run stops after reaching the model-turn limit:
+
+![Admin agent stopped after reaching the model-turn limit](src/docs/Agent_admin_role_test_case_with_tool_call_limit.png)
 
 ## Example Run
 
